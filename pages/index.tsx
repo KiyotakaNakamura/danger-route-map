@@ -62,6 +62,7 @@ export default function Home() {
       <LoadScript
         googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
         libraries={['geometry']}
+        onLoad={calculateRoute}
       >
         <GoogleMap
           mapContainerStyle={containerStyle}
