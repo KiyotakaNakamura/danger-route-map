@@ -3,6 +3,7 @@ import { GoogleMap, LoadScript, Marker, DirectionsRenderer } from '@react-google
 
 const center = { lat: 32.8031, lng: 130.7079 }; // 熊本駅を中心に設定（例）
 const containerStyle = { width: '100%', height: '500px' };
+const libraries: ('geometry')[] = ['geometry'];
 
 const dangerPoints = [
   { id: 1, lat: 32.789139073201945, lng: 130.71619414051773 },
@@ -32,9 +33,9 @@ export default function DangerAvoidMap() {
           const filteredRoute = result.routes.find(route => {
             return !route.overview_path.some(point => {
               return dangerPoints.some(danger => {
-                const distance = google.maps.geometry.spherical.computeDistanceBetween(
-                  new google.maps.LatLng(point.lat(), point.lng()),
-                  new google.maps.LatLng(danger.lat, danger.lng)
+                const distance = window.google.maps.geometry.spherical.computeDistanceBetween(
+                  new window.google.maps.LatLng(point.lat(), point.lng()),
+                  new window.google.maps.LatLng(danger.lat, danger.lng)
                 );
                 return distance < 50; // 50m以内の危険地点を避ける
               });
@@ -61,11 +62,11 @@ export default function DangerAvoidMap() {
   }, []);
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">通学路危険回避マップ</h1>
+    <div style={{ padding: 16 }}>
+      <h1 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: 16 }}>通学路危険回避マップ</h1>
       <LoadScript
         googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
-        libraries={["geometry"]}
+        libraries={libraries}
       >
         <GoogleMap
           mapContainerStyle={containerStyle}
@@ -83,11 +84,13 @@ export default function DangerAvoidMap() {
             />
           ))}
           {directions && (
-            <DirectionsRenderer directions={directions} />
+            <DirectionsRenderer directions={directions} key={JSON.stringify(directions)} />
           )}
         </GoogleMap>
       </LoadScript>
-      <button style={{ marginTop: 16 }} onClick={calculateRoute}>ルート再計算</button>
+      <button style={{ marginTop: 16 }} onClick={calculateRoute}>
+        ルート再計算
+      </button>
     </div>
   );
 }
