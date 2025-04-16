@@ -36,7 +36,13 @@ export default function DangerAvoidMap() {
         console.log('Directions status:', status);
         if (status === 'OK' && result.routes) {
           console.log('Directions response object:', result);
-
+          console.log('📦 ルート数:', result.routes.length);
+          result.routes.forEach((route, index) => {
+              console.log(`🛣 ルート ${index + 1}:`, route);
+              console.log(`📏 距離: ${route.legs[0]?.distance?.text}, 時間: ${route.legs[0]?.duration?.text}`);
+              console.log('🧭 経路全体のポイント数:', route.overview_path.length);
+            });
+            
           const filteredRoute = result.routes.find(route => {
             return !route.overview_path.some(point => {
               return dangerPoints.some(danger => {
