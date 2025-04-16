@@ -6,15 +6,19 @@ const containerStyle = { width: '100%', height: '500px' };
 const libraries: ('geometry')[] = ['geometry'];
 
 const dangerPoints = [
-  { id: 1, lat: 32.789139073201945, lng: 130.71619414051773 },
-  { id: 2, lat: 32.784195979371965, lng: 130.70525417068092 }
+//  { id: 1, lat: 32.789139073201945, lng: 130.71619414051773 },
+//  { id: 2, lat: 32.784195979371965, lng: 130.70525417068092 }
+
+//32.7862811959385, 130.7089393028537
+//32.78555756383564, 130.71185628829946
 ];
 
 export default function DangerAvoidMap() {
   const [map, setMap] = useState(null);
   const [directions, setDirections] = useState(null);
-  const origin = { lat: 32.8015, lng: 130.7072 }; // A地点（仮）
-  const destination = { lat: 32.8090, lng: 130.7120 }; // B地点（仮）
+  const origin = { lat: 32.789139073201945, lng: 130.71619414051773 }; // A地点（仮）
+  const destination = { lat: 32.784195979371965, lng: 130.70525417068092 }; // B地点（仮）
+
 
   const calculateRoute = () => {
     if (!window.google || !window.google.maps || !window.google.maps.TravelMode) return;
