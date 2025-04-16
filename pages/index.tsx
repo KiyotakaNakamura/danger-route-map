@@ -38,7 +38,7 @@ export default function DangerAvoidMap() {
 
             // 自動的に危険地点の近くを通る箇所から回避経由地を生成
             const avoidWaypoints: google.maps.DirectionsWaypoint[] = [];
-            const offset = 0.0005; // 約50mずらす
+            const offset = 0.0010; // 約50mずらす
             result.routes[0].overview_path.forEach(point => {
               dangerPoints.forEach(danger => {
                 const distance = window.google.maps.geometry.spherical.computeDistanceBetween(
