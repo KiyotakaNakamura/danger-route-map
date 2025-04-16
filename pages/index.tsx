@@ -50,7 +50,7 @@ export default function DangerAvoidMap() {
                   new window.google.maps.LatLng(point.lat(), point.lng()),
                   new window.google.maps.LatLng(danger.lat, danger.lng)
                 );
-                return distance < 10;
+                return distance < 20;
               });
             });
           });
