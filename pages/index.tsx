@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { GoogleMap, LoadScript, Marker, DirectionsRenderer } from '@react-google-maps/api';
+import { Button } from '@/components/ui/button';
 
-const center = { lat: 32.78644200227267, lng: 130.7099554658144 };
+const center = { lat: 32.8031, lng: 130.7079 }; // 熊本駅を中心に設定（例）
 const containerStyle = { width: '100%', height: '500px' };
 
 const dangerPoints = [
@@ -9,13 +10,14 @@ const dangerPoints = [
   { id: 2, lat: 32.784195979371965, lng: 130.70525417068092 }
 ];
 
-export default function Home() {
+export default function DangerAvoidMap() {
+  const [map, setMap] = useState(null);
   const [directions, setDirections] = useState(null);
-  const origin = { lat: 32.8015, lng: 130.7072 };
-  const destination = { lat: 32.8090, lng: 130.7120 };
+  const origin = { lat: 32.8015, lng: 130.7072 }; // A地点（仮）
+  const destination = { lat: 32.8090, lng: 130.7120 }; // B地点（仮）
 
   const calculateRoute = () => {
-    if (!window.google || !origin || !destination) return;
+    if (!window.google || !window.google.maps || !window.google.maps.TravelMode) return;
     const directionsService = new window.google.maps.DirectionsService();
 
     directionsService.route(
@@ -26,19 +28,22 @@ export default function Home() {
         provideRouteAlternatives: true
       },
       (result, status) => {
+        console.log('Directions status:', status);
         if (status === 'OK' && result.routes) {
           const filteredRoute = result.routes.find(route => {
             return !route.overview_path.some(point => {
               return dangerPoints.some(danger => {
-                const distance = window.google.maps.geometry.spherical.computeDistanceBetween(
-                  new window.google.maps.LatLng(point.lat(), point.lng()),
-                  new window.google.maps.LatLng(danger.lat, danger.lng)
+                const distance = google.maps.geometry.spherical.computeDistanceBetween(
+                  new google.maps.LatLng(point.lat(), point.lng()),
+                  new google.maps.LatLng(danger.lat, danger.lng)
                 );
-                return distance < 50;
+                return distance < 50; // 50m以内の危険地点を避ける
               });
             });
           });
           setDirections(filteredRoute ? { routes: [filteredRoute] } : result);
+        } else {
+          console.error('Directions API failed:', status);
         }
       }
     );
@@ -46,28 +51,28 @@ export default function Home() {
 
   useEffect(() => {
     const isReady =
-        typeof window !== 'undefined' &&
-        window.google &&
-        window.google.maps &&
-        window.google.maps.TravelMode;
+      typeof window !== 'undefined' &&
+      window.google &&
+      window.google.maps &&
+      window.google.maps.TravelMode;
 
-      if (isReady) {
-        calculateRoute();
-      }
+    if (isReady) {
+      calculateRoute();
+    }
   }, []);
 
   return (
-    <div style={{ padding: 16 }}>
-      <h1>通学路危険回避マップ</h1>
+    <div className="p-4">
+      <h1 className="text-xl font-bold mb-4">通学路危険回避マップ</h1>
       <LoadScript
         googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
-        libraries={['geometry']}
-        onLoad={calculateRoute}
+        libraries={["geometry"]}
       >
         <GoogleMap
           mapContainerStyle={containerStyle}
           center={center}
           zoom={15}
+          onLoad={map => setMap(map)}
         >
           {dangerPoints.map(point => (
             <Marker
@@ -83,9 +88,7 @@ export default function Home() {
           )}
         </GoogleMap>
       </LoadScript>
-      <button onClick={calculateRoute} style={{ marginTop: 12 }}>
-        ルート再計算
-      </button>
+      <Button className="mt-4" onClick={calculateRoute}>ルート再計算</Button>
     </div>
   );
 }
