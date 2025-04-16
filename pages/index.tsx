@@ -98,7 +98,6 @@ export default function DangerAvoidMap() {
               />
               <InfoWindow
                 position={{ lat: point.lat, lng: point.lng }}
-                options={{ pixelOffset: new window.google.maps.Size(0, -30) }}
               >
                 <div style={{ fontSize: '14px' }}>{point.message}</div>
               </InfoWindow>
