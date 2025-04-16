@@ -87,7 +87,7 @@ export default function DangerAvoidMap() {
           )}
         </GoogleMap>
       </LoadScript>
-      <button style={{ marginTop: 16 }} onClick={calculateRoute}>
+      <Button style={{ marginTop: 16 }} onClick={calculateRoute}>ルート再計算</Button>
     </div>
   );
 }
