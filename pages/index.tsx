@@ -42,7 +42,7 @@ export default function DangerAvoidMap() {
               console.log(`📏 距離: ${route.legs[0]?.distance?.text}, 時間: ${route.legs[0]?.duration?.text}`);
               console.log('🧭 経路全体のポイント数:', route.overview_path.length);
             });
-            
+
           const filteredRoute = result.routes.find(route => {
             return !route.overview_path.some(point => {
               return dangerPoints.some(danger => {
@@ -59,7 +59,7 @@ export default function DangerAvoidMap() {
             alert('⚠️ 危険地点を避けるルートが見つかりませんでした。通常ルートを表示します。');
           }
 
-          setDirections(filteredRoute ? { ...result, routes: [filteredRoute] } : result);
+          setDirections(filteredRoute ? { ...result, routes: [filteredRoute] } : result[1]);
         } else {
           console.error('Directions API failed:', status);
         }
