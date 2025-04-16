@@ -13,8 +13,9 @@ const dangerPoints = [
 export default function DangerAvoidMap() {
   const [map, setMap] = useState(null);
   const [directions, setDirections] = useState(null);
-  const origin = { lat: 32.789139073201945, lng: 130.71619414051773 }; // A地点（仮）
-  const destination = { lat: 32.784195979371965, lng: 130.70525417068092 }; // B地点（仮）
+
+  const origin = { lat: 32.7759697000559, lng: 130.698533265187 }; // A地点（仮）
+  const destination = { lat: 32.77414525997968, lng: 130.70544323851124 }; // B地点（仮）
 
   const calculateRoute = () => {
     if (!window.google || !window.google.maps || !window.google.maps.TravelMode) {
@@ -62,7 +63,7 @@ export default function DangerAvoidMap() {
 
   return (
     <div style={{ padding: 16 }}>
-      <h1 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: 16 }}>通学路危険回避マップ</h1>
+      <h1 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: 16 }}>通学路危険回避マップ（迂回するときとしない時がある　Googleの限界）</h1>
       <LoadScript
         googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
         libraries={libraries}
