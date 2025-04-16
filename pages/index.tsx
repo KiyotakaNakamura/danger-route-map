@@ -6,7 +6,7 @@ const containerStyle = { width: '100%', height: '500px' };
 const libraries: ('geometry')[] = ['geometry'];
 
 const dangerPoints = [
-  { id: 1, lat: 32.786884218194054, lng: 130.70812637248358 },
+  { id: 1, lat: 32.786934469864164, lng: 130.70891539313695 },
   { id: 2, lat: 32.786874167856624, lng: 130.70987178180764 }
 ,
 ];
