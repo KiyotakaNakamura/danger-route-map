@@ -16,11 +16,7 @@ export default function DangerAvoidMap() {
   const [directions, setDirections] = useState(null);
   const origin = { lat: 32.789139073201945, lng: 130.71619414051773 }; // A地点（仮）
   const destination = { lat: 32.784195979371965, lng: 130.70525417068092 }; // B地点（仮）
-
-    // 単純な避難ポイント（手動指定）例：回避用の中間地点
-    const safeWaypoint = { lat: 32.8020, lng: 130.7100 };
-
-    const calculateRoute = () => {
+  const calculateRoute = () => {
       if (!window.google || !window.google.maps || !window.google.maps.TravelMode) {
         console.warn('Google Maps not loaded, skipping route calculation.');
         return;
@@ -33,33 +29,55 @@ export default function DangerAvoidMap() {
           origin,
           destination,
           travelMode: window.google.maps.TravelMode.WALKING,
-          provideRouteAlternatives: true,
-          waypoints: [
-            { location: safeWaypoint, stopover: false } // 自動的に挿入された経由地
-          ]
+          provideRouteAlternatives: true
         },
         (result, status) => {
           console.log('Directions status:', status);
           if (status === 'OK' && result.routes) {
             console.log('Directions response object:', result);
 
-            const filteredRoute = result.routes.find(route => {
-              return !route.overview_path.some(point => {
-                return dangerPoints.some(danger => {
-                  const distance = window.google.maps.geometry.spherical.computeDistanceBetween(
-                    new window.google.maps.LatLng(point.lat(), point.lng()),
-                    new window.google.maps.LatLng(danger.lat, danger.lng)
-                  );
-                  return distance < 30;
-                });
+            // 自動的に危険地点の近くを通る箇所から回避経由地を生成
+            const avoidWaypoints: google.maps.DirectionsWaypoint[] = [];
+            const offset = 0.0005; // 約50mずらす
+            result.routes[0].overview_path.forEach(point => {
+              dangerPoints.forEach(danger => {
+                const distance = window.google.maps.geometry.spherical.computeDistanceBetween(
+                  new window.google.maps.LatLng(point.lat(), point.lng()),
+                  new window.google.maps.LatLng(danger.lat, danger.lng)
+                );
+                if (distance < 30) {
+                  avoidWaypoints.push({
+                    location: {
+                      lat: point.lat() + offset,
+                      lng: point.lng() + offset
+                    },
+                    stopover: false
+                  });
+                }
               });
             });
 
-            if (!filteredRoute) {
-              alert('⚠️ 危険地点を避けるルートが見つかりませんでした。通常ルートを表示します。');
-            }
+            console.log('Generated avoid waypoints:', avoidWaypoints);
 
-            setDirections(filteredRoute ? { ...result, routes: [filteredRoute] } : result);
+            // 回避ポイントを使用して再検索
+            directionsService.route(
+              {
+                origin,
+                destination,
+                travelMode: window.google.maps.TravelMode.WALKING,
+                waypoints: avoidWaypoints.slice(0, 5), // 最大5件まで制限
+                optimizeWaypoints: true
+              },
+              (secondResult, secondStatus) => {
+                console.log('Second route status:', secondStatus);
+                if (secondStatus === 'OK' && secondResult.routes) {
+                  setDirections(secondResult);
+                } else {
+                  alert('⚠️ 回避ルートの取得に失敗しました。通常ルートを表示します。');
+                  setDirections(result);
+                }
+              }
+            );
           } else {
             console.error('Directions API failed:', status);
           }
@@ -103,10 +121,6 @@ export default function DangerAvoidMap() {
                 }}
               />
             ))}
-            <Marker
-              position={safeWaypoint}
-              icon={{ url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png' }}
-            />
             {directions && (
               <DirectionsRenderer directions={directions} />
             )}
