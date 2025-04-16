@@ -60,8 +60,9 @@ export default function DangerAvoidMap() {
       window.google &&
       window.google.maps &&
       window.google.maps.TravelMode;
-
+      console.log('Google Maps ready check:', isReady);
     if (isReady) {
+      console.log('Calling calculateRoute...');
       calculateRoute();
     }
   }, []);
