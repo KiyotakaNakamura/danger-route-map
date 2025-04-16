@@ -45,6 +45,7 @@ export default function DangerAvoidMap() {
               });
             });
           });
+          console.log('Directions response object:', result);
           setDirections(filteredRoute ? { routes: [filteredRoute] } : result);
         } else {
           console.error('Directions API failed:', status);
