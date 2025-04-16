@@ -34,6 +34,7 @@ export default function DangerAvoidMap() {
       (result, status) => {
         console.log('Directions status:', status);
         if (status === 'OK' && result.routes) {
+          console.log('Directions response object:', result);
           const filteredRoute = result.routes.find(route => {
             return !route.overview_path.some(point => {
               return dangerPoints.some(danger => {
@@ -45,7 +46,6 @@ export default function DangerAvoidMap() {
               });
             });
           });
-          console.log('Directions response object:', result);
           setDirections(filteredRoute ? { routes: [filteredRoute] } : result);
         } else {
           console.error('Directions API failed:', status);
