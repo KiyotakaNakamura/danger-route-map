@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { GoogleMap, LoadScript, Marker, DirectionsRenderer } from '@react-google-maps/api';
 
-const center = { lat: 32.8031, lng: 130.7079 };
+const center = { lat: 32.78644200227267, lng: 130.7099554658144 };
 const containerStyle = { width: '100%', height: '500px' };
 
 const dangerPoints = [
-  { id: 1, lat: 32.784989727371894, lng: 130.7060 },
+  { id: 1, lat: 32.789139073201945, lng: 130.71619414051773 },
   { id: 2, lat: 32.784195979371965, lng: 130.70525417068092 }
 ];
 
