@@ -5,8 +5,8 @@ const center = { lat: 32.8031, lng: 130.7079 };
 const containerStyle = { width: '100%', height: '500px' };
 
 const dangerPoints = [
-  { id: 1, lat: 32.8051, lng: 130.7085 },
-  { id: 2, lat: 32.8040, lng: 130.7060 }
+  { id: 1, lat: 32.784989727371894, lng: 130.7060 },
+  { id: 2, lat: 32.784195979371965, lng: 130.70525417068092 }
 ];
 
 export default function Home() {
