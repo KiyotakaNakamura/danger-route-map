@@ -17,94 +17,104 @@ export default function DangerAvoidMap() {
   const origin = { lat: 32.789139073201945, lng: 130.71619414051773 }; // A地点（仮）
   const destination = { lat: 32.784195979371965, lng: 130.70525417068092 }; // B地点（仮）
 
-  const calculateRoute = () => {
-   if (!window.google || !window.google.maps || !window.google.maps.TravelMode) {
-     console.warn('Google Maps not loaded, skipping route calculation.');
-     return;
-   }
+    // 単純な避難ポイント（手動指定）例：回避用の中間地点
+    const safeWaypoint = { lat: 32.8020, lng: 130.7100 };
 
-   const directionsService = new window.google.maps.DirectionsService();
+    const calculateRoute = () => {
+      if (!window.google || !window.google.maps || !window.google.maps.TravelMode) {
+        console.warn('Google Maps not loaded, skipping route calculation.');
+        return;
+      }
 
-   directionsService.route(
-     {
-       origin,
-       destination,
-       travelMode: window.google.maps.TravelMode.WALKING,
-       provideRouteAlternatives: true
-     },
-     (result, status) => {
-       console.log('Directions status:', status);
-       if (status === 'OK' && result.routes) {
-         console.log('Directions response object:', result);
+      const directionsService = new window.google.maps.DirectionsService();
 
-         const filteredRoute = result.routes.find(route => {
-           return !route.overview_path.some(point => {
-             return dangerPoints.some(danger => {
-               const distance = window.google.maps.geometry.spherical.computeDistanceBetween(
-                 new window.google.maps.LatLng(point.lat(), point.lng()),
-                 new window.google.maps.LatLng(danger.lat, danger.lng)
-               );
-               return distance < 30; // ← 判定を少し緩めた
-             });
-           });
-         });
+      directionsService.route(
+        {
+          origin,
+          destination,
+          travelMode: window.google.maps.TravelMode.WALKING,
+          provideRouteAlternatives: true,
+          waypoints: [
+            { location: safeWaypoint, stopover: false } // 自動的に挿入された経由地
+          ]
+        },
+        (result, status) => {
+          console.log('Directions status:', status);
+          if (status === 'OK' && result.routes) {
+            console.log('Directions response object:', result);
 
-         if (!filteredRoute) {
-           alert('⚠️ 危険地点を避けるルートが見つかりませんでした。通常ルートを表示します。');
-         }
+            const filteredRoute = result.routes.find(route => {
+              return !route.overview_path.some(point => {
+                return dangerPoints.some(danger => {
+                  const distance = window.google.maps.geometry.spherical.computeDistanceBetween(
+                    new window.google.maps.LatLng(point.lat(), point.lng()),
+                    new window.google.maps.LatLng(danger.lat, danger.lng)
+                  );
+                  return distance < 30;
+                });
+              });
+            });
 
-         setDirections(filteredRoute ? { ...result, routes: [filteredRoute] } : result);
-       } else {
-         console.error('Directions API failed:', status);
-       }
-     }
-   );
- };
+            if (!filteredRoute) {
+              alert('⚠️ 危険地点を避けるルートが見つかりませんでした。通常ルートを表示します。');
+            }
 
- return (
-   <div style={{ padding: 16 }}>
-     <h1 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: 16 }}>通学路危険回避マップ</h1>
-     <LoadScript
-       googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
-       libraries={libraries}
-       onLoad={() => {
-         console.log('✅ LoadScript onLoad: Google Maps 読み込み完了');
-         const isReady =
-           typeof window !== 'undefined' &&
-           window.google &&
-           window.google.maps &&
-           window.google.maps.TravelMode;
+            setDirections(filteredRoute ? { ...result, routes: [filteredRoute] } : result);
+          } else {
+            console.error('Directions API failed:', status);
+          }
+        }
+      );
+    };
 
-         if (isReady) {
-           calculateRoute();
-         } else {
-           console.warn('Google Maps API not ready yet!');
-         }
-       }}
-     >
-       <GoogleMap
-         mapContainerStyle={containerStyle}
-         center={center}
-         zoom={15}
-         onLoad={map => setMap(map)}
-       >
-         {dangerPoints.map(point => (
-           <Marker
-             key={point.id}
-             position={{ lat: point.lat, lng: point.lng }}
-             icon={{
-               url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png'
-             }}
-           />
-         ))}
-         {directions && (
-           <DirectionsRenderer directions={directions} />
-         )}
-       </GoogleMap>
-     </LoadScript>
-     <button style={{ marginTop: 16 }} onClick={calculateRoute}>
-       ルート再計算
-     </button>
-   </div>
- );
-}
+    return (
+      <div style={{ padding: 16 }}>
+        <h1 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: 16 }}>通学路危険回避マップ</h1>
+        <LoadScript
+          googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+          libraries={libraries}
+          onLoad={() => {
+            console.log('✅ LoadScript onLoad: Google Maps 読み込み完了');
+            const isReady =
+              typeof window !== 'undefined' &&
+              window.google &&
+              window.google.maps &&
+              window.google.maps.TravelMode;
+
+            if (isReady) {
+              calculateRoute();
+            } else {
+              console.warn('Google Maps API not ready yet!');
+            }
+          }}
+        >
+          <GoogleMap
+            mapContainerStyle={containerStyle}
+            center={center}
+            zoom={15}
+            onLoad={map => setMap(map)}
+          >
+            {dangerPoints.map(point => (
+              <Marker
+                key={point.id}
+                position={{ lat: point.lat, lng: point.lng }}
+                icon={{
+                  url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png'
+                }}
+              />
+            ))}
+            <Marker
+              position={safeWaypoint}
+              icon={{ url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png' }}
+            />
+            {directions && (
+              <DirectionsRenderer directions={directions} />
+            )}
+          </GoogleMap>
+        </LoadScript>
+        <button style={{ marginTop: 16 }} onClick={calculateRoute}>
+          ルート再計算
+        </button>
+      </div>
+    );
+  }
