@@ -59,7 +59,7 @@ export default function DangerAvoidMap() {
             alert('⚠️ 危険地点を避けるルートが見つかりませんでした。通常ルートを表示します。');
           }
 
-          setDirections(filteredRoute ? { ...result, routes: [filteredRoute] } : result[1]);
+          setDirections(filteredRoute ? { ...result, routes: [filteredRoute] } : result.routes[1]);
         } else {
           console.error('Directions API failed:', status);
         }
