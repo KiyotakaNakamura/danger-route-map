@@ -45,7 +45,15 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (window.google && window.google.maps) calculateRoute();
+    const isReady =
+        typeof window !== 'undefined' &&
+        window.google &&
+        window.google.maps &&
+        window.google.maps.TravelMode;
+
+      if (isReady) {
+        calculateRoute();
+      }
   }, []);
 
   return (
