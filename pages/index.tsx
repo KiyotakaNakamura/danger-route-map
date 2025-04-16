@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { GoogleMap, LoadScript, Marker, DirectionsRenderer } from '@react-google-maps/api';
-import { Button } from '@/components/ui/button';
 
 const center = { lat: 32.8031, lng: 130.7079 }; // 熊本駅を中心に設定（例）
 const containerStyle = { width: '100%', height: '500px' };
@@ -88,7 +87,7 @@ export default function DangerAvoidMap() {
           )}
         </GoogleMap>
       </LoadScript>
-      <Button className="mt-4" onClick={calculateRoute}>ルート再計算</Button>
+      <button style={{ marginTop: 16 }} onClick={calculateRoute}>
     </div>
   );
 }
