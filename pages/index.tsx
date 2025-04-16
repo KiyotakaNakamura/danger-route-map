@@ -50,7 +50,7 @@ export default function DangerAvoidMap() {
                   new window.google.maps.LatLng(point.lat(), point.lng()),
                   new window.google.maps.LatLng(danger.lat, danger.lng)
                 );
-                return distance < 30;
+                return distance < 10;
               });
             });
           });
@@ -59,7 +59,7 @@ export default function DangerAvoidMap() {
             alert('⚠️ 危険地点を避けるルートが見つかりませんでした。通常ルートを表示します。');
           }
 
-          setDirections(filteredRoute ? { ...result, routes: [filteredRoute] } : result.routes[1]);
+          setDirections(filteredRoute ? { ...result, routes: [filteredRoute] } : result);
         } else {
           console.error('Directions API failed:', status);
         }
