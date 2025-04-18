@@ -6,7 +6,8 @@ const containerStyle = { width: '100%', height: '500px' };
 const libraries: ('geometry')[] = ['geometry'];
 
 const dangerPoints = [
-  { id: 1, lat: 32.7756949359551, lng: 130.70118831340451, message: '⚠️ 不審者情報あり' },
+    { id: 1, lat: 32.77414525997968, lng: 130.70544323851124 },
+//  { id: 1, lat: 32.7756949359551, lng: 130.70118831340451, message: '⚠️ 不審者情報あり' },
 //  { id: 2, lat: 32.78799865611062, lng: 130.71117811216305, message: '🚧 工事中：通行注意' }
 ];
 
@@ -44,7 +45,7 @@ export default function DangerAvoidMap() {
                   new window.google.maps.LatLng(point.lat(), point.lng()),
                   new window.google.maps.LatLng(danger.lat, danger.lng)
                 );
-                return distance < 30;
+                return distance < 3000;
               });
             });
           });
