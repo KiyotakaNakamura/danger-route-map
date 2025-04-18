@@ -17,7 +17,8 @@ export default function DangerAvoidMap() {
   const [directions, setDirections] = useState(null);
 
   const origin = { lat: 32.7759697000559, lng: 130.698533265187 }; // A地点（仮）
-  const destination = { lat: 32.77414525997968, lng: 130.70544323851124 }; // B地点（仮）
+  const destination = { lat: 32.7759697000559, lng: 130.698533265187 }; // A地点（仮）
+//  const destination = { lat: 32.77414525997968, lng: 130.70544323851124 }; // B地点（仮）
 
   const calculateRoute = () => {
     if (!window.google || !window.google.maps || !window.google.maps.TravelMode) {
