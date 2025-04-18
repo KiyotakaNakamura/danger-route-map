@@ -100,7 +100,7 @@ export default function DangerAvoidMap() {
               />
               <InfoWindow
                 position={{ lat: point.lat, lng: point.lng }}
-                options={{ disableAutoPan: true, pixelOffset: new window.google.maps.Size(0, -30) }}
+                options={{ disableAutoPan: true }}
               >
                 <div style={{ fontSize: '14px' }}>{point.title}</div>
               </InfoWindow>
