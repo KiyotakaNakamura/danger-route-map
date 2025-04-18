@@ -1,15 +1,14 @@
 import { useState } from 'react';
-import { GoogleMap, LoadScript, Marker, DirectionsRenderer } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Marker, DirectionsRenderer, InfoWindow } from '@react-google-maps/api';
 
-const center = { lat: 32.77322513639463, lng: 130.7050461036714 }; // 熊本駅を中心に設定（例）
+const center = { lat: 32.8031, lng: 130.7079 }; // 熊本駅を中心に設定（例）
 const containerStyle = { width: '100%', height: '500px' };
 const libraries: ('geometry')[] = ['geometry'];
 
 const dangerPoints = [
-//  { id: 1, lat: 32.77322513639463, lng: 130.7050461036714 },
-
-  // { id: 2, lat: 32.7756949359551, lng: 130.70118831340451 },
-  // { id: 3, lat: 32.78799865611062, lng: 130.71117811216305 }
+  { id: 1, lat: 32.77414525997968, lng: 130.70544323851124, title: '赤い車情報' },
+  { id: 2, lat: 32.782527541762775, lng: 130.7016438873452, title: '不審者発見' },
+  { id: 3, lat: 32.781358612633504, lng: 130.7127667830044, title: '動物目撃' }
 ];
 
 export default function DangerAvoidMap() {
@@ -18,7 +17,6 @@ export default function DangerAvoidMap() {
 
   const origin = { lat: 32.7759697000559, lng: 130.698533265187 }; // A地点（仮）
   const destination = { lat: 32.7759697000559, lng: 130.698533265187 }; // A地点（仮）
-//  const destination = { lat: 32.77414525997968, lng: 130.70544323851124 }; // B地点（仮）
 
   const calculateRoute = () => {
     if (!window.google || !window.google.maps || !window.google.maps.TravelMode) {
@@ -53,12 +51,11 @@ export default function DangerAvoidMap() {
           });
 
           if (!filteredRoute) {
-            alert('⚠️ 危険地点を避けるルートが見つかりませんでした。通常ルートを表示します。');
+            alert('⚠️ 危険地点を避けるルートが見つかりませんでした。');
             setDirections(null);
             return;
           }
 
-          //setDirections(filteredRoute ? { ...result, routes: [filteredRoute] } : result);
           setDirections({ ...result, routes: [filteredRoute] });
         } else {
           console.error('Directions API failed:', status);
@@ -91,14 +88,22 @@ export default function DangerAvoidMap() {
         <GoogleMap
           mapContainerStyle={containerStyle}
           center={center}
-          zoom={17}
+          zoom={18}
           onLoad={map => setMap(map)}
         >
           {dangerPoints.map(point => (
-            <Marker
-              key={point.id}
-              position={{ lat: point.lat, lng: point.lng }}
-            />
+            <>
+              <Marker
+                key={point.id}
+                position={{ lat: point.lat, lng: point.lng }}
+              />
+              <InfoWindow
+                position={{ lat: point.lat, lng: point.lng }}
+                options={{ disableAutoPan: true }}
+              >
+                <div style={{ fontSize: '14px' }}>{point.title}</div>
+              </InfoWindow>
+            </>
           ))}
           {directions && (
             <DirectionsRenderer directions={directions} />
