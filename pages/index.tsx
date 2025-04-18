@@ -7,6 +7,7 @@ const libraries: ('geometry')[] = ['geometry'];
 
 const dangerPoints = [
   { id: 1, lat: 32.77322513639463, lng: 130.7050461036714 },
+
   // { id: 2, lat: 32.7756949359551, lng: 130.70118831340451 },
   // { id: 3, lat: 32.78799865611062, lng: 130.71117811216305 }
 ];
@@ -55,7 +56,7 @@ export default function DangerAvoidMap() {
           }
 
           //setDirections(filteredRoute ? { ...result, routes: [filteredRoute] } : result);
-          setDirections(filteredRoute ? { ...result, routes: [filteredRoute] } );
+          setDirections(routes: [filteredRoute]);
         } else {
           console.error('Directions API failed:', status);
         }
