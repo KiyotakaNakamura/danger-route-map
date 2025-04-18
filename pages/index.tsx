@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import { GoogleMap, LoadScript, Marker, DirectionsRenderer, InfoWindow } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Marker, DirectionsRenderer } from '@react-google-maps/api';
 
 const center = { lat: 32.8031, lng: 130.7079 }; // 熊本駅を中心に設定（例）
 const containerStyle = { width: '100%', height: '500px' };
 const libraries: ('geometry')[] = ['geometry'];
 
 const dangerPoints = [
-    { id: 1, lat: 32.77414525997968, lng: 130.70544323851124 },
-//  { id: 1, lat: 32.7756949359551, lng: 130.70118831340451, message: '⚠️ 不審者情報あり' },
-//  { id: 2, lat: 32.78799865611062, lng: 130.71117811216305, message: '🚧 工事中：通行注意' }
+  { id: 1, lat: 32.77414525997968, lng: 130.70544323851124 },
+  { id: 2, lat: 32.7756949359551, lng: 130.70118831340451 },
+  { id: 3, lat: 32.78799865611062, lng: 130.71117811216305 }
 ];
 
 export default function DangerAvoidMap() {
@@ -90,20 +90,10 @@ export default function DangerAvoidMap() {
           onLoad={map => setMap(map)}
         >
           {dangerPoints.map(point => (
-            <>
-              <Marker
-                key={point.id}
-                position={{ lat: point.lat, lng: point.lng }}
-                icon={{
-                  url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png'
-                }}
-              />
-              <InfoWindow
-                position={{ lat: point.lat, lng: point.lng }}
-              >
-                <div style={{ fontSize: '14px' }}>{point.message}</div>
-              </InfoWindow>
-            </>
+            <Marker
+              key={point.id}
+              position={{ lat: point.lat, lng: point.lng }}
+            />
           ))}
           {directions && (
             <DirectionsRenderer directions={directions} />
