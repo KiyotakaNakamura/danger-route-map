@@ -99,7 +99,7 @@ export default function DangerAvoidMap() {
                 position={{ lat: point.lat, lng: point.lng }}
               />
               <InfoWindow
-                position={{ lat: point.lat + 0.001, lng: point.lng }}
+                position={{ lat: point.lat + 0.0002, lng: point.lng }}
                 options={{ disableAutoPan: true }}
               >
                 <div style={{ fontSize: '14px' }}>{point.title}</div>
