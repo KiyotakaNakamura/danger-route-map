@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { GoogleMap, LoadScript, Marker, DirectionsRenderer } from '@react-google-maps/api';
 
-const center = { lat: 32.8031, lng: 130.7079 }; // 熊本駅を中心に設定（例）
+const center = { lat: 32.77322513639463, lng: 130.7050461036714 }; // 熊本駅を中心に設定（例）
 const containerStyle = { width: '100%', height: '500px' };
 const libraries: ('geometry')[] = ['geometry'];
 
@@ -90,7 +90,7 @@ export default function DangerAvoidMap() {
         <GoogleMap
           mapContainerStyle={containerStyle}
           center={center}
-          zoom={15}
+          zoom={18}
           onLoad={map => setMap(map)}
         >
           {dangerPoints.map(point => (
