@@ -11,12 +11,13 @@ const dangerPoints = [
   { id: 3, lat: 32.781358612633504, lng: 130.7127667830044, title: '動物目撃' }
 ];
 
+
 export default function DangerAvoidMap() {
   const [map, setMap] = useState(null);
   const [directions, setDirections] = useState(null);
 
   const origin = { lat: 32.7759697000559, lng: 130.698533265187 }; // A地点（仮）
-  const destination = { lat: 32.7759697000559, lng: 130.698533265187 }; // A地点（仮）
+  const destination = { lat: 32.77414525997968, lng: 130.70544323851124 }; // B地点（仮）
 
   const calculateRoute = () => {
     if (!window.google || !window.google.maps || !window.google.maps.TravelMode) {
@@ -99,7 +100,7 @@ export default function DangerAvoidMap() {
               />
               <InfoWindow
                 position={{ lat: point.lat, lng: point.lng }}
-                options={{ disableAutoPan: true }}
+                options={{ disableAutoPan: true, pixelOffset: new window.google.maps.Size(0, -30) }}
               >
                 <div style={{ fontSize: '14px' }}>{point.title}</div>
               </InfoWindow>
